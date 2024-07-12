@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: openjdk17
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <account-id>.dkr.ecr.us-east-1.amazonaws.com
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - mvn clean package
+      - docker build -t demo-app .
+      - docker tag demo-app:latest <account-id>.dkr.ecr.us-east-1.amazonaws.com/demo-app:latest
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/demo-app:latest
+
+artifacts:
+  files:
+    - target/demo-0.0.1-SNAPSHOT.jar
