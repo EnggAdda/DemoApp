@@ -24,7 +24,7 @@ class HelloController {
     }
 
     @GetMapping("/hello")
-    public String hello() {
+    public String hello1() {
         return "Hello, EnggAdda!";
     }
 }
